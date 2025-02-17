@@ -1,5 +1,6 @@
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
+using Serilog;
 
 namespace Postbox.Handlers;
 
@@ -20,6 +21,7 @@ public static class MessageEncryption
         }
         catch (Exception ex)
         {
+            Log.Error(ex.ToString());
             return string.Empty;
         }
     }

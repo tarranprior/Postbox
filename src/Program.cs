@@ -1,11 +1,17 @@
 ﻿using System.CommandLine;
+using Serilog;
 
 namespace Postbox;
 
 class Program
 {
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.Console()
+            .CreateLogger();
+
         var root = new RootCommand("📫 Postbox is a lightweight command-line RSA encryption tool which allows users to generate key pairs, exchange public keys, encrypt and decrypt messages, and communicate securely over SMTP.");
 
         var messageOption = new Option<string>(["-m", "--message"], "Specify a message.");
@@ -14,6 +20,6 @@ class Program
         var outputOption = new Option<string>(["-o", "--output"], "Specify an output file.");
         var emailOption = new Option<string>(["-e", "--email"], "Specify an email address.");
 
-        root.Invoke(args);
+        await root.InvokeAsync(args);
     }
 }
