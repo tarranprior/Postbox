@@ -23,7 +23,7 @@ class Program
         // Postbox Configuration
         ConfigManager.LoadConfig();
 
-        var root = new RootCommand("📫 Postbox is a lightweight command-line RSA encryption tool which allows users to generate key pairs, exchange public keys, encrypt and decrypt messages, and communicate securely over SMTP.");
+        var root = new RootCommand("📫 Postbox is a lightweight encryption tool which allows users to generate key pairs,\r\nexchange public keys, encrypt and decrypt messages, and communicate securely over SMTP using RSA.");
 
         var keyArgument = new Argument<string?>("--key", "Specify a public/private key.") { Arity = ArgumentArity.ZeroOrOne };
         var messageArgument = new Argument<string?>("--message", "Specify a message.") { Arity = ArgumentArity.ZeroOrOne };
