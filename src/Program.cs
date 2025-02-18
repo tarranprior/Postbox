@@ -70,18 +70,22 @@ class Program
 
         var decryptMessageCommand = new Command("decrypt-message", "Decrypts a message.")
         {
-            messageOption, keyOption
+            messageArgument, keyArgument, messageOption, keyOption
         };
-        decryptMessageCommand.SetHandler((string message, string key) =>
+        decryptMessageCommand.SetHandler((string? messageArg, string? keyArg, string? messageOpt, string? keyOpt) =>
         {
+            string? message = messageArg ?? messageOpt;
+            string? key = keyArg ?? keyOpt;
+
             if (string.IsNullOrEmpty(message))
             {
                 Log.Error("Please specify a message (-m, --message) to decrypt.");
+                return;
             }
             string decryptedMessage = MessageDecryption.Decrypt(message, key);
             Log.Information($"Message: {decryptedMessage}");
         },
-        messageOption, keyOption);
+        messageArgument, keyArgument, messageOption, keyOption);
 
         root.AddCommand(generateKeysCommand);
         root.AddCommand(encryptMessageCommand);
