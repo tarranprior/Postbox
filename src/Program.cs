@@ -25,11 +25,13 @@ class Program
 
         var root = new RootCommand("📫 Postbox is a lightweight command-line RSA encryption tool which allows users to generate key pairs, exchange public keys, encrypt and decrypt messages, and communicate securely over SMTP.");
 
+        var keyArgument = new Argument<string?>("--key", "Specify a public/private key.") { Arity = ArgumentArity.ZeroOrOne };
+        var messageArgument = new Argument<string?>("--message", "Specify a message.") { Arity = ArgumentArity.ZeroOrOne };
+
         var bitsOption = new Option<int>(["-b", "--bits"], () => 2048, "Specify the number of bits for a key-pair (must be 2048, 3072, or 4096). Default is 2048.");
         var emailOption = new Option<string>(["-e", "--email"], "Specify an email address.");
-        var fileOption = new Option<string>(["-f", "--file"], "Specify a file.");
-        var keyOption = new Option<string>(["-k", "--key"], "Specify a public/private key.");
-        var messageOption = new Option<string>(["-m", "--message"], "Specify a message.");
+        var keyOption = new Option<string>(["-k", "--key"], "Specify a public/private key.") {Arity = ArgumentArity.ZeroOrOne};
+        var messageOption = new Option<string>(["-m", "--message"], "Specify a message.") {Arity = ArgumentArity.ZeroOrOne};
         var outputOption = new Option<string>(["-o", "--output"], "Specify an output file.");
 
         /// <summary>
@@ -44,24 +46,27 @@ class Program
 
         var encryptMessageCommand = new Command("encrypt-message", "Encrypts a message.")
         {
-            messageOption, fileOption, keyOption
+            messageArgument, keyArgument, messageOption, keyOption
         };
-        encryptMessageCommand.SetHandler((string message, string file, string key) =>
+        encryptMessageCommand.SetHandler((string? messageArg, string? keyArg, string? messageOpt, string? keyOpt) =>
         {
-            if (string.IsNullOrEmpty(key))
+            string? message = messageArg ?? messageOpt;
+            string? key = keyArg ?? keyOpt;
+
+            if (string.IsNullOrEmpty(message))
             {
-                Log.Error("Please specify a public key (-k, --key) to encrypt the message with.");
+                Log.Error("Please specify a message (-m, --message).");
                 return;
             }
-            if (string.IsNullOrEmpty(message) && string.IsNullOrEmpty(file))
+            else if (string.IsNullOrEmpty(key))
             {
-                Log.Error("Please specify a message (-m, --message) or a file (-f, --file).");
+                Log.Error("Please specify a public key (-k, --key) to encrypt the message with.");
                 return;
             }
             string encryptedMessage = MessageEncryption.Encrypt(message, key);
             Log.Information($"Message: {encryptedMessage}");
         },
-        messageOption, fileOption, keyOption);
+        messageArgument, keyArgument, messageOption, keyOption);
 
         var decryptMessageCommand = new Command("decrypt-message", "Decrypts a message.")
         {
