@@ -13,14 +13,16 @@ public static class ConfigManager
     /// </summary>
     public static void LoadConfig()
     {
-        if (!File.Exists("./.env"))
+        string envPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../", ".env"));
+        
+        if (!File.Exists(envPath))
         {
             Log.Error("Dotenv file (.env) does not exist.");
             return;
         }
         try
         {
-            Env.Load();
+            Env.Load(envPath);
         }
         catch (Exception ex)
         {
