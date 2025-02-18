@@ -1,5 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
+using Postbox.Configuration;
+using Postbox.KeyManagement;
 using Serilog;
 
 namespace Postbox.Handlers;
@@ -26,6 +28,23 @@ public static class MessageDecryption
     {
         try
         {
+            if (string.IsNullOrEmpty(privateKeyPath))
+            {
+                string email = ConfigManager.Get("SMTP_USER");
+                privateKeyPath = Path.Combine(KeyManager.DefaultDirectory, $"{email}_private.pem");
+
+                if (!File.Exists(privateKeyPath))
+                {
+                    Log.Error("Private key does not exist. Set an email address in the .env file and generate a key pair, or specify a key file (-k, --key).");
+                    return String.Empty;
+                }
+            }
+            else if (!File.Exists(privateKeyPath))
+            {
+                Log.Error($"Private key {privateKeyPath} does not exist.");
+                return String.Empty;
+            }
+
             byte[] privateKeyBytes = Convert.FromBase64String(File.ReadAllText(privateKeyPath));
             byte[] encryptedMessageBytes = Convert.FromBase64String(message);
             

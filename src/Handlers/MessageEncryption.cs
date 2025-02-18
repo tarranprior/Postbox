@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using Postbox.KeyManagement;
 using Serilog;
 
 namespace Postbox.Handlers;
@@ -26,6 +27,13 @@ public static class MessageEncryption
     {
         try
         {
+            publicKeyPath = Path.Combine(KeyManager.DefaultDirectory, $"{publicKeyPath}_public.pem");
+            if (!File.Exists(publicKeyPath))
+            {
+                Log.Error($"Public key {publicKeyPath} does not exist. Please import a public key associated with that email address first.");
+                return string.Empty;
+            }
+
             byte[] publicKeyBytes = Convert.FromBase64String(File.ReadAllText(publicKeyPath));
 
             using var rsa = RSA.Create();

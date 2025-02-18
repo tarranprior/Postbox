@@ -14,7 +14,7 @@ class Program
     /// <param name="args">The arguments passed to the application.</param>
     static async Task Main(string[] args)
     {
-        // Configure Serilog
+        // Serilog Configuration
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
             .WriteTo.Console()
@@ -48,17 +48,39 @@ class Program
         };
         encryptMessageCommand.SetHandler((string message, string file, string key) =>
         {
+            if (string.IsNullOrEmpty(key))
+            {
+                Log.Error("Please specify a public key (-k, --key) to encrypt the message with.");
+                return;
+            }
             if (string.IsNullOrEmpty(message) && string.IsNullOrEmpty(file))
             {
                 Log.Error("Please specify a message (-m, --message) or a file (-f, --file).");
                 return;
             }
             string encryptedMessage = MessageEncryption.Encrypt(message, key);
-            Log.Information($"Encypted Message: {encryptedMessage}");
-        }, messageOption, fileOption, keyOption);
+            Log.Information($"Message: {encryptedMessage}");
+        },
+        messageOption, fileOption, keyOption);
+
+        var decryptMessageCommand = new Command("decrypt-message", "Decrypts a message.")
+        {
+            messageOption, keyOption
+        };
+        decryptMessageCommand.SetHandler((string message, string key) =>
+        {
+            if (string.IsNullOrEmpty(message))
+            {
+                Log.Error("Please specify a message (-m, --message) to decrypt.");
+            }
+            string decryptedMessage = MessageDecryption.Decrypt(message, key);
+            Log.Information($"Message: {decryptedMessage}");
+        },
+        messageOption, keyOption);
 
         root.AddCommand(generateKeysCommand);
         root.AddCommand(encryptMessageCommand);
+        root.AddCommand(decryptMessageCommand);
 
         await root.InvokeAsync(args);
     }

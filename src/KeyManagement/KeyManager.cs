@@ -12,7 +12,7 @@ public static class KeyManager
     /// <summary>
     /// The default directory where key files are written.
     /// </summary>
-    private static readonly string DefaultDirectory =
+    public static readonly string DefaultDirectory =
     Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Postbox", "Keys");
 
     /// <summary>
