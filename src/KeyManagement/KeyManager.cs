@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using Postbox.Configuration;
 using Serilog;
 
 namespace Postbox.KeyManagement;
@@ -24,6 +25,13 @@ public static class KeyManager
     /// </remarks>
     public static async Task GenerateKeys(int bits)
     {
+        string email = ConfigManager.Get("SMTP_USER");
+        if (string.IsNullOrEmpty(email) || email == "YOUR_EMAIL_ADDRESS")
+        {
+            Log.Error("Please update the .env file with your email address before generating a key pair.");
+            return;
+        }
+
         int[] keySizes = [2048, 3072, 4096];
 
         if (!keySizes.Contains(bits))
@@ -38,11 +46,28 @@ public static class KeyManager
         {
             Directory.CreateDirectory(DefaultDirectory);
         }
-        string privateKey = Convert.ToBase64String(rsa.ExportRSAPrivateKey());
-        string publicKey = Convert.ToBase64String(rsa.ExportRSAPublicKey());
 
-        await File.WriteAllTextAsync(Path.Combine(DefaultDirectory, "private_key.pem"), privateKey);
-        await File.WriteAllTextAsync(Path.Combine(DefaultDirectory, "public_key.pem"), publicKey);
+        string privateKey = Convert.ToBase64String(rsa.ExportRSAPrivateKey());
+        string privateKeyPath = Path.Combine(DefaultDirectory, $"{email}_private.pem");
+        string publicKey = Convert.ToBase64String(rsa.ExportRSAPublicKey());
+        string publicKeyPath = Path.Combine(DefaultDirectory, $"{email}_public.pem");
+
+        if (File.Exists(privateKeyPath) || File.Exists(publicKeyPath))
+        {
+            Log.Error($"Keys for {email} already exist.");
+            return;
+        }
+
+        try
+        {
+            await File.WriteAllTextAsync((privateKeyPath), privateKey);
+            await File.WriteAllTextAsync((publicKeyPath), publicKey);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex.ToString());
+            return;
+        }
 
         Log.Information($"Keys written to {DefaultDirectory}");
     }

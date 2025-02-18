@@ -1,5 +1,7 @@
 ﻿using System.CommandLine;
 using Serilog;
+using Postbox.Configuration;
+using Postbox.Handlers;
 using Postbox.KeyManagement;
 
 namespace Postbox;
@@ -17,6 +19,9 @@ class Program
             .MinimumLevel.Debug()
             .WriteTo.Console()
             .CreateLogger();
+
+        // Postbox Configuration
+        ConfigManager.LoadConfig();
 
         var root = new RootCommand("📫 Postbox is a lightweight command-line RSA encryption tool which allows users to generate key pairs, exchange public keys, encrypt and decrypt messages, and communicate securely over SMTP.");
 
@@ -37,7 +42,23 @@ class Program
         };
         generateKeysCommand.SetHandler(async (int bits) => await KeyManager.GenerateKeys(bits), bitsOption);
 
+        var encryptMessageCommand = new Command("encrypt-message", "Encrypts a message.")
+        {
+            messageOption, fileOption, keyOption
+        };
+        encryptMessageCommand.SetHandler((string message, string file, string key) =>
+        {
+            if (string.IsNullOrEmpty(message) && string.IsNullOrEmpty(file))
+            {
+                Log.Error("Please specify a message (-m, --message) or a file (-f, --file).");
+                return;
+            }
+            string encryptedMessage = MessageEncryption.Encrypt(message, key);
+            Log.Information($"Encypted Message: {encryptedMessage}");
+        }, messageOption, fileOption, keyOption);
+
         root.AddCommand(generateKeysCommand);
+        root.AddCommand(encryptMessageCommand);
 
         await root.InvokeAsync(args);
     }
