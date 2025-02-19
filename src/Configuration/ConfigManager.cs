@@ -40,4 +40,21 @@ public static class ConfigManager
     {
         return Env.GetString(key, defaultValue);
     }
+
+    /// <summary>
+    /// Retrieves an environment variable as an integer.
+    /// </summary>
+    /// <param name="key">The name of the environment variable.</param>
+    /// <param name="defaultValue">The default value to return if conversion fails.</param>
+    /// <returns>The integer value of the environment variable, or the default value if not found.</returns>
+    public static int GetInt(string key, int defaultValue = 0)
+    {
+        string value = Env.GetString(key, defaultValue.ToString());
+        if (int.TryParse(value, out int result))
+        {
+            return result;
+        }
+        
+        return defaultValue;
+    }
 }
