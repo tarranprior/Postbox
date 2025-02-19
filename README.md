@@ -42,7 +42,18 @@ Commands:
 > dotnet run -- generate-keys --bits 4096
 ```
 
-#### Encryption
+#### Key Exchange
+
+```s
+> dotnet run -- send-key recipient_email@example.com
+> dotnet run -- send-key --key email@example.com --email recipient_email@example.com
+
+** Output:
+[00:00:00 INF] 📩 Dispatching key to `recipient_email@example.com` via 127.0.0.1:1025...
+[00:00:00 INF] Key has been sent to `recipient_email@example.com`.
+```
+
+#### Encryption / Decryption
 
 ```s
 > dotnet run -- encrypt-message "Foo!" "email@example.com"
@@ -54,11 +65,8 @@ Commands:
 cn6FSbQnpZsFAg8vC+I+Dr9sVV9waS4gRnW+sIliuNRse77tUB6SzYPjZnbJDx4cXcxEcOSz4e8xxnGa7xiA98/rp71RNEQE1Wu
 MYQgrTXyl1qRWPse++zvyWaIqj39p4IiJcfm1a4SuMYvoGGkvu4dupTCcYQrvAbxOUqdccJvg4yOYx0S5HhcuRxzN6EUYkGTSsy
 0uS33eAwMSEOhI99fsj4LshxMius7fZA9Fm5We5rjdhtTwWxwLEzkfqYCZh7jE/YHxGVQ==
-```
 
-#### Decryption
 
-```s
 > dotnet run -- decrypt-message "GTMDAql3cgoOoeL/1qYvDNzIaQrM/..."
 > dotnet run -- decrypt-message --message "GTMDAql3cgoOoeL/1qYvDNzIaQrM/..." --key "email@example.com"
 
