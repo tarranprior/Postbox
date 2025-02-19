@@ -3,6 +3,18 @@
 
 📫 Postbox is a lightweight encryption tool which allows users to generate key pairs, exchange public keys, encrypt and decrypt messages, and communicate securely over SMTP using [RSA](https://en.wikipedia.org/wiki/RSA_(cryptosystem)).
 
+## Configuration
+
+1. Install and configure a local SMTP Server like [Proton Bridge](https://proton.me/mail/bridge)
+2. Update the values in `.env.EXAMPLE` and rename to `.env`.
+
+  ```s
+  SMTP_SERV=YOUR_SMTP_SERVER
+  SMTP_PORT=YOUR_SMTP_PORT
+  SMTP_USER=YOUR_EMAIL_ADDRESS
+  SMTP_PASS=YOUR_PASSWORD
+  ```
+
 ## Usage
 ```
 Description:
