@@ -9,8 +9,8 @@
 2. Update the values in `.env.EXAMPLE` and rename to `.env`.
 
   ```s
-  SMTP_SERV=YOUR_SMTP_SERVER
-  SMTP_PORT=YOUR_SMTP_PORT
+  SMTP_SERV=YOUR_SMTP_SERVER * Defaults to 127.0.0.1
+  SMTP_PORT=YOUR_SMTP_PORT * Defaults to 1025 
   SMTP_USER=YOUR_EMAIL_ADDRESS
   SMTP_PASS=YOUR_PASSWORD
   ```
@@ -29,7 +29,29 @@ Options:
   -?, -h, --help  Show help and usage information
 
 Commands:
-  generate-keys                        Generates a 2048-bit RSA key pair.
+  generate-keys                        Generates a new key pair.
   encrypt-message <--message> <--key>  Encrypts a message.
   decrypt-message <--message> <--key>  Decrypts a message.
+```
+
+### Examples
+
+```s
+> dotnet run -- encrypt-message "Foo!" "email@example.com"
+> dotnet run -- encrypt-message --message "Foo!" --key "email@example.com"
+> dotnet run -- encrypt-message -m "Foo!" -k "email@example.com"
+
+** Output:
+[00:00:00 INF] Message: GTMDAql3cgoOoeL/1qYvDNzIaQrMWxC4Fg8QAQ1wdKgyfXPNGi4PzfCmOuNR8I4ixLW99Du745Q
+cn6FSbQnpZsFAg8vC+I+Dr9sVV9waS4gRnW+sIliuNRse77tUB6SzYPjZnbJDx4cXcxEcOSz4e8xxnGa7xiA98/rp71RNEQE1Wu
+MYQgrTXyl1qRWPse++zvyWaIqj39p4IiJcfm1a4SuMYvoGGkvu4dupTCcYQrvAbxOUqdccJvg4yOYx0S5HhcuRxzN6EUYkGTSsy
+0uS33eAwMSEOhI99fsj4LshxMius7fZA9Fm5We5rjdhtTwWxwLEzkfqYCZh7jE/YHxGVQ==
+```
+
+```s
+> dotnet run -- decrypt-message "GTMDAql3cgoOoeL/1qYvDNzIaQrM/..."
+> dotnet run -- decrypt-message --message "GTMDAql3cgoOoeL/1qYvDNzIaQrM/..." --key "email@example.com"
+
+** Output:
+[00:00:00 INF] Message: Foo!
 ```
