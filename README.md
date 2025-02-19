@@ -5,7 +5,7 @@
 
 ## Configuration
 
-1. Install and configure a local SMTP Server like [Proton Bridge](https://proton.me/mail/bridge)
+1. Install and configure a local SMTP Server like [Proton Bridge](https://proton.me/mail/bridge).
 2. Update the values in `.env.EXAMPLE` and rename to `.env`.
 
   ```s
@@ -14,6 +14,7 @@
   SMTP_USER=YOUR_EMAIL_ADDRESS
   SMTP_PASS=YOUR_PASSWORD
   ```
+  The `SMTP_USER` value will be the name of your public and private keys: `YOUR_EMAIL_ADDRESS_public.pem` and `YOUR_EMAIL_ADDRESS_private.pem`. These will then act as the default keys when encrypting and decrypting messages, unless another key file is specified with the `--key` parameter.
 
 ## Usage
 ```
