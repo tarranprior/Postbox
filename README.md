@@ -6,15 +6,28 @@
 ## Configuration
 
 1. Install and configure a local SMTP Server like [Proton Bridge](https://proton.me/mail/bridge).
-2. Update the values in `.env.EXAMPLE` and rename to `.env`.
+2. Export the certificate and install:
+    ```s
+    ** Import the certificate:
+    PS C:\> Import-Certificate -FilePath "./cert.pem" -CertStoreLocation Cert:\CurrentUser\Root
 
-  ```s
-  SMTP_SERV=YOUR_SMTP_SERVER * Defaults to 127.0.0.1
-  SMTP_PORT=YOUR_SMTP_PORT * Defaults to 1025 
-  SMTP_USER=YOUR_EMAIL_ADDRESS
-  SMTP_PASS=YOUR_PASSWORD
-  ```
-  The `SMTP_USER` value will be the name of your public and private keys: `YOUR_EMAIL_ADDRESS_public.pem` and `YOUR_EMAIL_ADDRESS_private.pem`. These will then act as the default keys when encrypting and decrypting messages.
+    ** Ensure SMTP is active:
+    PS C:\> Get-NetTCPConnection -LocalPort 1025
+    
+    LocalAddress                        LocalPort RemoteAddress
+    ------------                        --------- -------------
+    127.0.0.1                           1025      0.0.0.0    
+    ```
+3. Update the values in `.env.EXAMPLE` and rename to `.env`.
+  
+    ```s
+    SMTP_SERV=YOUR_SMTP_SERVER * Defaults to 127.0.0.1
+    SMTP_PORT=YOUR_SMTP_PORT * Defaults to 1025 
+    SMTP_USER=YOUR_EMAIL_ADDRESS
+    SMTP_PASS=YOUR_PASSWORD
+    ```
+
+The `SMTP_USER` value will be the name of your public and private keys: `YOUR_EMAIL_ADDRESS_public.pem` and `YOUR_EMAIL_ADDRESS_private.pem`. These will then act as the default keys when encrypting and decrypting messages.
 
 ## Usage
 ```
@@ -48,8 +61,8 @@ Commands:
 ```s
   send-key <key> <email>  Emails a public key to a recipient.
 
-  > dotnet run -- send-key recipient_email@example.com
-  > dotnet run -- send-key --key email@example.com --email recipient_email@example.com
+  > dotnet run -- send-key "recipient_email@example.com"
+  > dotnet run -- send-key --key "email@example.com" --email "recipient_email@example.com"
   
   ** Output:
   [00:00:00 INF] 📩 Dispatching key to `recipient_email@example.com` via 127.0.0.1:1025...
