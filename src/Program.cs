@@ -3,6 +3,7 @@ using Serilog;
 using Postbox.Configuration;
 using Postbox.Handlers;
 using Postbox.KeyManagement;
+using Postbox.Utilities;
 
 namespace Postbox;
 
@@ -25,11 +26,12 @@ class Program
 
         var root = new RootCommand("📫 Postbox is a lightweight encryption tool which allows users to generate key pairs,\r\nexchange public keys, encrypt and decrypt messages, and communicate securely over SMTP using RSA.");
 
-        var keyArgument = new Argument<string?>("--key", "Specify a public/private key.") { Arity = ArgumentArity.ZeroOrOne };
-        var messageArgument = new Argument<string?>("--message", "Specify a message.") { Arity = ArgumentArity.ZeroOrOne };
+        var emailArgument = new Argument<string?>("email", "Specify an email address.") { Arity = ArgumentArity.ZeroOrOne };
+        var keyArgument = new Argument<string?>("key", "Specify a public/private key.") { Arity = ArgumentArity.ZeroOrOne };
+        var messageArgument = new Argument<string?>("message", "Specify a message.") { Arity = ArgumentArity.ZeroOrOne };
 
         var bitsOption = new Option<int>(["-b", "--bits"], () => 2048, "Specify the number of bits for a key-pair (must be 2048, 3072, or 4096). Default is 2048.");
-        var emailOption = new Option<string>(["-e", "--email"], "Specify an email address.");
+        var emailOption = new Option<string>(["-e", "--email"], "Specify an email address.") {Arity = ArgumentArity.ZeroOrOne};
         var keyOption = new Option<string>(["-k", "--key"], "Specify a public/private key.") {Arity = ArgumentArity.ZeroOrOne};
         var messageOption = new Option<string>(["-m", "--message"], "Specify a message.") {Arity = ArgumentArity.ZeroOrOne};
         var outputOption = new Option<string>(["-o", "--output"], "Specify an output file.");
@@ -38,7 +40,7 @@ class Program
         /// Generates a new RSA key-pair with an optional specified number of bits.
         /// </summary>
         /// <param name="bits">The RSA key size (must be 2048, 3072, or 4096). Default is 2048.</param>
-        var generateKeysCommand = new Command("generate-keys", "Generates a 2048-bit RSA key pair.")
+        var generateKeysCommand = new Command("generate-keys", "Generates a new key pair.")
         {
             bitsOption
         };
@@ -101,9 +103,82 @@ class Program
         },
         messageArgument, keyArgument, messageOption, keyOption);
 
+        /// <summary>
+        /// Sends a public key to a recipient.
+        /// </summary>
+        /// <param name="keyArgument">The key file path argument (if provided).</param>
+        /// <param name="emailArgument">The recipient email argument (if provided).</param>
+        /// <param name="keyOption">The key file path option (if provided).</param>
+        /// <param name="emailOption">The recipient email option (if provided).</param>
+        var SendKeyCommand = new Command("send-key", "Send a public key to a recipient.")
+        {
+            keyArgument, emailArgument, keyOption, emailOption
+        };
+        SendKeyCommand.SetHandler((string? keyArg, string? emailArg, string? keyOpt, string? emailOpt) =>
+        {
+            string? key = keyArg ?? keyOpt;
+            string? email = emailArg ?? emailOpt;
+
+            if (!string.IsNullOrEmpty(key) && string.IsNullOrEmpty(email))
+            {
+                if (!Validation.ValidateEmail(key))
+                {
+                    Log.Error("The recipient email address is not valid. Please correct it and try again.");
+                    return;
+                }
+
+                email = key;
+                key = KeyManager.GetPublicKey();
+
+                if (string.IsNullOrEmpty(key))
+                {
+                    Log.Error("Public key does not exist. Generate a key pair with `generate-keys`, or specify a public key (-k, --key).");
+                    return;
+                }
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(key))
+                {
+                    key = KeyManager.GetPublicKey();
+                    if (string.IsNullOrEmpty(key))
+                    {
+                        Log.Error("Public key does not exist. Generate a key pair with `generate-keys`, or specify a public key (-k, --key).");
+                        return;
+                    }
+                }
+                else
+                {
+                    key = Path.Combine(KeyManager.DefaultDirectory, $"{key.ToLower()}_public.pem");
+                }
+
+                if (string.IsNullOrEmpty(email))
+                {
+                    Log.Error("Please specify a recipient email (-e, --email).");
+                    return;
+                }
+
+                if (!File.Exists(key))
+                {
+                    Log.Error($"Public key file for `{key}` does not exist.");
+                    return;
+                }
+
+                if (!Validation.ValidateEmail(email))
+                {
+                    Log.Error("The recipient email address is not valid. Please correct it and try again.");
+                    return;
+                }
+            }
+
+            KeyExchange.SendPublicKey(key, email);
+        },
+        keyArgument, emailArgument, keyOption, emailOption);
+
         root.AddCommand(generateKeysCommand);
         root.AddCommand(encryptMessageCommand);
         root.AddCommand(decryptMessageCommand);
+        root.AddCommand(SendKeyCommand);
 
         await root.InvokeAsync(args);
     }
