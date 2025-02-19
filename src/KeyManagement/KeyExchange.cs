@@ -3,8 +3,16 @@ using Serilog;
 
 namespace Postbox.KeyManagement;
 
+/// <summary>
+/// Provides functionality for exchanging public keys.
+/// </summary>
 public static class KeyExchange
 {
+    /// <summary>
+    /// Sends the public key to the specified email address.
+    /// </summary>
+    /// <param name="key">The file path of the public key.</param>
+    /// <param name="email">The recipient's email address.</param>
     public static void SendPublicKey(string key, string email)
     {
         try
