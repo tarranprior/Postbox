@@ -78,4 +78,16 @@ public static class KeyManager
 
         Log.Information($"Keys successfully written to `{DefaultDirectory}`.");
     }
+
+    public static string GetPublicKey()
+    {
+        string email = ConfigManager.Get("SMTP_USER");
+        string publicKeyPath = Path.Combine(DefaultDirectory, $"{email.ToLower()}_public.pem");
+
+        if (File.Exists(publicKeyPath))
+        {
+            return publicKeyPath;
+        }
+        return string.Empty;
+    }
 }
