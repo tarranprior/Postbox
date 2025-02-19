@@ -79,6 +79,12 @@ public static class KeyManager
         Log.Information($"Keys successfully written to `{DefaultDirectory}`.");
     }
 
+    /// <summary>
+    /// Gets the file path of a public key from the default directory.
+    /// </summary>
+    /// <returns>
+    /// The file path of the public key if it exists; otherwise, an empty string.
+    /// </returns>
     public static string GetPublicKey()
     {
         string email = ConfigManager.Get("SMTP_USER");
