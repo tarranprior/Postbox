@@ -44,6 +44,13 @@ class Program
         };
         generateKeysCommand.SetHandler(async (int bits) => await KeyManager.GenerateKeys(bits), bitsOption);
 
+        /// <summary>
+        /// Encrypts a specified message using a specified public key.
+        /// </summary>
+        /// <param name="messageArgument">The message to be encrypted (positional argument).</param>
+        /// <param name="keyArgument">The public key used for encryption (positional argument).</param>
+        /// <param name="messageOption">Optional flag (-m, --message) for specifying the message.</param>
+        /// <param name="keyOption">Optional flag (-k, --key) for specifying the public key.</param>
         var encryptMessageCommand = new Command("encrypt-message", "Encrypts a message.")
         {
             messageArgument, keyArgument, messageOption, keyOption
@@ -68,6 +75,13 @@ class Program
         },
         messageArgument, keyArgument, messageOption, keyOption);
 
+        /// <summary>
+        /// Decrypts a given message using the specified private key.
+        /// </summary>
+        /// <param name="messageArgument">The encrypted message to be decrypted (positional argument).</param>
+        /// <param name="keyArgument">The private key used for decryption (positional argument).</param>
+        /// <param name="messageOption">Optional flag (-m, --message) for specifying the encrypted message.</param>
+        /// <param name="keyOption">Optional flag (-k, --key) for specifying the private key.</param>
         var decryptMessageCommand = new Command("decrypt-message", "Decrypts a message.")
         {
             messageArgument, keyArgument, messageOption, keyOption
