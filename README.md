@@ -14,7 +14,7 @@
   SMTP_USER=YOUR_EMAIL_ADDRESS
   SMTP_PASS=YOUR_PASSWORD
   ```
-  The `SMTP_USER` value will be the name of your public and private keys: `YOUR_EMAIL_ADDRESS_public.pem` and `YOUR_EMAIL_ADDRESS_private.pem`. These will then act as the default keys when encrypting and decrypting messages, unless another key file is specified with the `--key` parameter.
+  The `SMTP_USER` value will be the name of your public and private keys: `YOUR_EMAIL_ADDRESS_public.pem` and `YOUR_EMAIL_ADDRESS_private.pem`. These will then act as the default keys when encrypting and decrypting messages.
 
 ## Usage
 ```
@@ -35,7 +35,14 @@ Commands:
   decrypt-message <--message> <--key>  Decrypts a message.
 ```
 
-### Examples
+#### Key Generation
+
+```s
+> dotnet run -- generate-keys
+> dotnet run -- generate-keys --bits 4096
+```
+
+#### Encryption
 
 ```s
 > dotnet run -- encrypt-message "Foo!" "email@example.com"
@@ -48,6 +55,8 @@ cn6FSbQnpZsFAg8vC+I+Dr9sVV9waS4gRnW+sIliuNRse77tUB6SzYPjZnbJDx4cXcxEcOSz4e8xxnGa
 MYQgrTXyl1qRWPse++zvyWaIqj39p4IiJcfm1a4SuMYvoGGkvu4dupTCcYQrvAbxOUqdccJvg4yOYx0S5HhcuRxzN6EUYkGTSsy
 0uS33eAwMSEOhI99fsj4LshxMius7fZA9Fm5We5rjdhtTwWxwLEzkfqYCZh7jE/YHxGVQ==
 ```
+
+#### Decryption
 
 ```s
 > dotnet run -- decrypt-message "GTMDAql3cgoOoeL/1qYvDNzIaQrM/..."
