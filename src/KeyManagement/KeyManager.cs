@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using Postbox.Configuration;
+using Postbox.Utilities;
 using Serilog;
 
 namespace Postbox.KeyManagement;
@@ -26,9 +27,15 @@ public static class KeyManager
     public static async Task GenerateKeys(int bits)
     {
         string email = ConfigManager.Get("SMTP_USER");
+        
         if (string.IsNullOrEmpty(email) || email == "YOUR_EMAIL_ADDRESS")
         {
-            Log.Error("Please update the .env file with your email address before generating a key pair.");
+            Log.Error("Please update the `.env` file with your email address before generating a key pair.");
+            return;
+        }
+        else if (!Validation.ValidateEmail(email))
+        {
+            Log.Error("The email address from the `.env` is not valid. Please correct it and try again.");
             return;
         }
 
@@ -36,7 +43,7 @@ public static class KeyManager
 
         if (!keySizes.Contains(bits))
         {
-            Log.Warning($"Postbox doesn't support {bits} as a key size. Defaulting to 2048 bits.");
+            Log.Warning($"Postbox doesn't support `{bits}` as a key size. Defaulting to 2048 bits.");
             bits = 2048;
         }
 
@@ -48,13 +55,13 @@ public static class KeyManager
         }
 
         string privateKey = Convert.ToBase64String(rsa.ExportRSAPrivateKey());
-        string privateKeyPath = Path.Combine(DefaultDirectory, $"{email}_private.pem");
+        string privateKeyPath = Path.Combine(DefaultDirectory, $"{email.ToLower()}_private.pem");
         string publicKey = Convert.ToBase64String(rsa.ExportRSAPublicKey());
-        string publicKeyPath = Path.Combine(DefaultDirectory, $"{email}_public.pem");
+        string publicKeyPath = Path.Combine(DefaultDirectory, $"{email.ToLower()}_public.pem");
 
         if (File.Exists(privateKeyPath) || File.Exists(publicKeyPath))
         {
-            Log.Error($"Keys for {email} already exist.");
+            Log.Error($"Keys for `{email}` already exist!");
             return;
         }
 
@@ -69,6 +76,6 @@ public static class KeyManager
             return;
         }
 
-        Log.Information($"Keys written to {DefaultDirectory}");
+        Log.Information($"Keys successfully written to `{DefaultDirectory}`.");
     }
 }
