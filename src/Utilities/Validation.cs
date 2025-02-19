@@ -1,9 +1,8 @@
 using System.Text.RegularExpressions;
-using Serilog;
 
 namespace Postbox.Utilities;
 
-public static class Validation
+public static partial class Validation
 {
     /// <summary>
     /// Validates specified email addresses.
@@ -12,12 +11,12 @@ public static class Validation
     /// <returns>True if valid, false otherwise.</returns>
     public static bool ValidateEmail(string email)
     {
-        if (string.IsNullOrEmpty(email))
-        {
-            return false;
-        }
-
-        bool isValid = Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
-        return isValid;
+        return EmailRegex().IsMatch(email);
     }
+
+    /// <summary>
+    /// Precompiled regex for validating email addresses using .NET 7+ GeneratedRegexAttribute.
+    /// </summary>
+    [GeneratedRegex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$")]
+    private static partial Regex EmailRegex();
 }
