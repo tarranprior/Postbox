@@ -70,6 +70,7 @@ Commands:
   generate-keys                    Generates a new key pair.
   encrypt-message <message> <key>  Encrypts a message.
   decrypt-message <message> <key>  Decrypts a message.
+  import-key <key> <email>         Imports a key from a local file.
   send-key <key> <email>           Emails a public key to a recipient.
   send-message <message> <email>   Sends an encrypted message to a recipient.
 ```
@@ -81,6 +82,16 @@ Commands:
 
   > dotnet run -- generate-keys
   > dotnet run -- generate-keys --bits 4096
+```
+
+```s
+  import-key <key> <email>         Imports a key from a local file.
+
+  > dotnet run -- import-key "path/to/key.pem" "email@example.com"
+  > dotnet run -- import-key --key "path/to/key.pem" --email "email@example.com"
+
+  ** Output:
+  [00:00:00 INF] 📥 Key successfully imported for `email@example.com`.
 ```
 
 ```s
