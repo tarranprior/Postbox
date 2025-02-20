@@ -71,6 +71,7 @@ Commands:
   encrypt-message <message> <key>  Encrypts a message.
   decrypt-message <message> <key>  Decrypts a message.
   send-key <key> <email>           Emails a public key to a recipient.
+  send-message <message> <email>   Sends an encrypted message to a recipient.
 ```
 
 ### Examples
@@ -89,8 +90,8 @@ Commands:
   > dotnet run -- send-key --key "email@example.com" --email "recipient_email@example.com"
   
   ** Output:
-  [00:00:00 INF] 📩 Dispatching key to `recipient_email@example.com` via 127.0.0.1:1025...
-  [00:00:00 INF] Key has been sent to `recipient_email@example.com`.
+  [00:00:00 INF] 📩 Dispatching email to `recipient_email@example.com` via 127.0.0.1:1025...
+  [00:00:00 INF] Email has been sent successfully.
 ```
 
 ```s
@@ -115,4 +116,15 @@ decrypt-message <message> <key>  Decrypts a message.
 
 ** Output:
 [00:00:00 INF] Message: Foo!
+```
+
+```s
+send-message <message> <email>
+
+> dotnet run -- send-message "Foo!" "email@example.com"
+> dotnet run -- send-message --message "Foo!" --email "email@example.com"
+
+** Output:
+[00:00:00 INF] 📩 Dispatching email to `recipient_email@example.com` via 127.0.0.1:1025...
+[00:00:00 INF] Email has been sent successfully.
 ```
