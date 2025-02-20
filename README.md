@@ -3,6 +3,30 @@
 
 📫 Postbox is a lightweight encryption tool which allows users to generate key pairs, exchange public keys, encrypt and decrypt messages, and communicate securely over SMTP using [RSA](https://en.wikipedia.org/wiki/RSA_(cryptosystem)).
 
+## Features
+
+## Installation
+
+1. Clone the repository:
+    ```s
+    git clone https://github.com/tarranprior/Postbox
+    ```
+    
+2. Change to the directory.
+    ```s
+    cd Postbox
+    ```
+
+3. Restore the dependencies:
+    ```s
+    dotnet restore
+    ```
+
+4. Run the application:
+   ```s
+   dotnet run Postbox --help
+   ```
+
 ## Configuration
 
 1. Install and configure a local SMTP Server like [Proton Bridge](https://proton.me/mail/bridge).
