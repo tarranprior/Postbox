@@ -47,9 +47,9 @@ public static class SmtpHandler
                     message.Attachments.Add(new Attachment(attachmentPath));
                 }
 
-                Log.Information($"📩 Dispatching key to {recipientEmail} via {smtpServer}:{smtpPort}...");
+                Log.Information($"📩 Dispatching email to {recipientEmail} via {smtpServer}:{smtpPort}...");
                 smtp.Send(message);
-                Log.Information($"Key has been sent to {recipientEmail}.");
+                Log.Information($"Email has been sent successfully.");
             }
         }
         catch (SmtpException smtpEx)
