@@ -104,6 +104,41 @@ class Program
         messageArgument, keyArgument, messageOption, keyOption);
 
         /// <summary>
+        /// Imports a key from a key file.
+        /// </summary>
+        /// <param name="keyArgument">The key file path argument (if provided).</param>
+        /// <param name="emailArgument">The recipient email argument (if provided).</param>
+        /// <param name="keyOption">The key file path option (if provided).</param>
+        /// <param name="emailOption">The recipient email option (if provided).</param>
+        var ImportKeyCommand = new Command("import-key", "Imports a key from a local file.")
+        {
+            keyArgument, emailArgument, keyOption, emailOption
+        };
+        ImportKeyCommand.SetHandler((string? keyArg, string? emailArg, string? keyOpt, string? emailOpt) =>
+        {
+            string? key = keyArg ?? keyOpt;
+            string? email = emailArg ?? emailOpt;
+
+            if (!File.Exists(key))
+            {
+                Log.Error($"The specified key file `{key}` does not exist.");
+                return;
+            }
+            else if (string.IsNullOrEmpty(email))
+            {
+                Log.Error("Please specify an email (-e, --email) to associate the key with.");
+                return;
+            }
+            if (!Validation.ValidateEmail(email))
+            {
+                Log.Error($"The provided email `{email}` is not valid.");
+                return;
+            }
+            KeyManager.ImportKey(key, email);
+        },
+        keyArgument, emailArgument, keyOption, emailOption);
+
+        /// <summary>
         /// Sends a public key to a recipient.
         /// </summary>
         /// <param name="keyArgument">The key file path argument (if provided).</param>
@@ -223,6 +258,7 @@ class Program
         root.AddCommand(generateKeysCommand);
         root.AddCommand(encryptMessageCommand);
         root.AddCommand(decryptMessageCommand);
+        root.AddCommand(ImportKeyCommand);
         root.AddCommand(SendKeyCommand);
         root.AddCommand(SendMessageCommand);
 

@@ -27,7 +27,8 @@ public static class KeyManager
     public static async Task GenerateKeys(int bits)
     {
         string email = ConfigManager.Get("SMTP_USER");
-        
+        int[] keySizes = [2048, 3072, 4096];
+
         if (string.IsNullOrEmpty(email) || email == "YOUR_EMAIL_ADDRESS")
         {
             Log.Error("Please update the `.env` file with your email address before generating a key pair.");
@@ -38,8 +39,6 @@ public static class KeyManager
             Log.Error("The email address from the `.env` is not valid. Please correct it and try again.");
             return;
         }
-
-        int[] keySizes = [2048, 3072, 4096];
 
         if (!keySizes.Contains(bits))
         {
@@ -95,5 +94,34 @@ public static class KeyManager
             return publicKeyPath;
         }
         return string.Empty;
+    }
+
+    /// <summary>
+    /// Imports a public key file and associates it with the specified email address.
+    /// </summary>
+    /// <param name="key">The file path to the public key being imported.</param>
+    /// <param name="email">The email address to associate with the imported key.</param>
+    /// <remarks>
+    /// The imported key will be stored in the user's key directory (`Postbox/Keys`) as `{email}_public.pem`.
+    /// If a key already exists for the given email, the user will be prompted before overwriting.
+    /// </remarks>
+    public static void ImportKey(string key, string email)
+    {
+        string destination = Path.Combine(KeyManager.DefaultDirectory, $"{email.ToLower()}_public.pem");
+
+        if (File.Exists(destination))
+        {
+            Log.Warning($"A public key already exists for `{email}`.");
+            Console.Write("Overwrite existing key? (y/n): ");
+            string? response = Console.ReadLine()?.Trim().ToLower();
+
+            if (response != "y")
+            {
+                return;
+            }
+        }
+
+        File.Copy(key, destination, true);
+        Log.Information($"Key successfully imported for `{email}`.");
     }
 }

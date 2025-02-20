@@ -31,11 +31,11 @@ public static class ConfigManager
     }
 
     /// <summary>
-    /// Retrieves an environment variable by key, with an optional default value.
+    /// Retrieves an environment variable by key.
     /// </summary>
     /// <param name="key">The name of the environment variable.</param>
     /// <param name="defaultValue">The default value to return.</param>
-    /// <returns>The value of the environment variable, or the default value if not found.</returns>
+    /// <returns>The value of the environment variable, or an empty value.</returns>
     public static string Get(string key, string defaultValue = "")
     {
         return Env.GetString(key, defaultValue);
