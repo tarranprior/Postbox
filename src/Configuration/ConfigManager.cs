@@ -11,18 +11,19 @@ public static class ConfigManager
     /// <summary>
     /// Loads the environment variables from the .env file.
     /// </summary>
-    public static void LoadConfig()
+    public static async Task LoadConfig()
     {
-        string envPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../", ".env"));
+        string env = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../", ".env"));
         
-        if (!File.Exists(envPath))
+        if (!File.Exists(env))
         {
             Log.Error("Dotenv file (.env) does not exist.");
             return;
         }
         try
         {
-            Env.Load(envPath);
+            string envContent = await File.ReadAllTextAsync(env);
+            Env.Load(env);
         }
         catch (Exception ex)
         {

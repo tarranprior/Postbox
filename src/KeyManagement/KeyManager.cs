@@ -34,7 +34,7 @@ public static class KeyManager
             Log.Error("Please update the `.env` file with your email address before generating a key pair.");
             return;
         }
-        else if (!Validation.ValidateEmail(email))
+        else if (!Validation.IsEmail(email))
         {
             Log.Error("The email address from the `.env` is not valid. Please correct it and try again.");
             return;
@@ -105,7 +105,7 @@ public static class KeyManager
     /// The imported key will be stored in the user's key directory (`Postbox/Keys`) as `{email}_public.pem`.
     /// If a key already exists for the given email, the user will be prompted before overwriting.
     /// </remarks>
-    public static void ImportKey(string key, string email)
+    public static async Task ImportKey(string key, string email)
     {
         string destination = Path.Combine(KeyManager.DefaultDirectory, $"{email.ToLower()}_public.pem");
 
@@ -113,6 +113,7 @@ public static class KeyManager
         {
             Log.Warning($"A public key already exists for `{email}`.");
             Console.Write("Overwrite existing key? (y/n): ");
+
             string? response = Console.ReadLine()?.Trim().ToLower();
 
             if (response != "y")
@@ -121,7 +122,7 @@ public static class KeyManager
             }
         }
 
-        File.Copy(key, destination, true);
+        await Task.Run(() => File.Copy(key, destination, true));
         Log.Information($"Key successfully imported for `{email}`.");
     }
 }

@@ -17,11 +17,11 @@ public static class SmtpHandler
     /// <param name="subject">The subject of the email.</param>
     /// <param name="body">The body of the email.</param>
     /// <param name="attachmentPath">Optional attachment file path.</param>
-    public static void SendEmail(string recipientEmail, string subject, string body, string? attachmentPath = null)
+    public static async Task SendEmail(string recipientEmail, string subject, string body, string? attachmentPath = null)
     {
         try
         {
-            ConfigManager.LoadConfig();
+            await ConfigManager.LoadConfig();
 
             string smtpServer = ConfigManager.Get("SMTP_SERVER", "127.0.0.1");
             int smtpPort = ConfigManager.GetInt("SMTP_PORT", 1025);
@@ -48,7 +48,7 @@ public static class SmtpHandler
                 }
 
                 Log.Information($"📩 Dispatching email to {recipientEmail} via {smtpServer}:{smtpPort}...");
-                smtp.Send(message);
+                await smtp.SendMailAsync(message);
                 Log.Information($"Email has been sent successfully.");
             }
         }

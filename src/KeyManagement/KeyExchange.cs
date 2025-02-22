@@ -13,14 +13,14 @@ public static class KeyExchange
     /// </summary>
     /// <param name="key">The file path of the public key.</param>
     /// <param name="email">The recipient's email address.</param>
-    public static void SendPublicKey(string key, string email)
+    public static async Task SendPublicKey(string key, string email)
     {
         try
         {
             string publicKeyContent = File.ReadAllText(key);
             string subject = $"Postbox Key {DateTime.UtcNow:dd-MM-yyyy-HH:mm:ss}";
             string body = $"-----BEGIN RSA PUBLIC KEY-----\n{publicKeyContent}\n-----END RSA PUBLIC KEY-----";
-            SmtpHandler.SendEmail(email, subject, body, key);
+            await SmtpHandler.SendEmail(email, subject, body, key);
         }
         catch (Exception e)
         {
@@ -33,13 +33,13 @@ public static class KeyExchange
     /// </summary>
     /// <param name="message">The message to send.</param>
     /// <param name="email">The recipient's email address.</param>
-    public static void SendMessage(string message, string email)
+    public static async Task SendMessage(string message, string email)
     {
         try
         {
             string subject = $"Postbox Message {DateTime.UtcNow:dd-MM-yyyy-HH:mm:ss}";
             string body = $"{message}";
-            SmtpHandler.SendEmail(email, subject, body);
+            await SmtpHandler.SendEmail(email, subject, body);
         }
         catch (Exception e)
         {

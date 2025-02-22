@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Postbox.Configuration;
 using Postbox.KeyManagement;
+using Postbox.Utilities;
 using Serilog;
 
 namespace Postbox.Handlers;
@@ -24,7 +25,7 @@ public static class MessageDecryption
     /// The specified private key must be a valid Base64-encoded RSA key file.
     /// If an error occurs (i.e., an incorrect key), it logs the exception and returns an empty string.
     /// </remarks>
-    public static string Decrypt(string message, string? privateKeyPath = null)
+    public static async Task<string> Decrypt(string message, string? privateKeyPath = null)
     {
         try
         {
@@ -36,20 +37,27 @@ public static class MessageDecryption
                 if (!File.Exists(privateKeyPath))
                 {
                     Log.Error("Private key does not exist. Set an email address in the .env file and generate a key pair, or specify a key file (-k, --key).");
-                    return String.Empty;
+                    return string.Empty;
                 }
             }
             else if (!File.Exists(privateKeyPath))
             {
                 Log.Error($"Private key {privateKeyPath} does not exist.");
-                return String.Empty;
+                return string.Empty;
             }
 
-            byte[] privateKeyBytes = Convert.FromBase64String(File.ReadAllText(privateKeyPath));
+            string privateKeyContent = await File.ReadAllTextAsync(privateKeyPath);
+            byte[] privateKeyBytes = Convert.FromBase64String(privateKeyContent);
             byte[] encryptedMessageBytes = Convert.FromBase64String(message);
-            
+
             using var rsa = RSA.Create();
             rsa.ImportRSAPrivateKey(privateKeyBytes, out _);
+
+            if (!Validation.IsEncryptedMessage(message, rsa.KeySize))
+            {
+                Log.Error($"Please specify a valid message to decrypt.");
+                return string.Empty;
+            }
 
             byte[] decryptedMessageBytes = rsa.Decrypt(encryptedMessageBytes, RSAEncryptionPadding.OaepSHA256);
             return Encoding.UTF8.GetString(decryptedMessageBytes);

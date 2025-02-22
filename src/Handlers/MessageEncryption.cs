@@ -23,7 +23,7 @@ public static class MessageEncryption
     /// The specified public key must be a valid Base64-encoded RSA public key.
     /// If an error occurs (i.e., invalid key format), it logs the exception and returns an empty string.
     /// </remarks>
-    public static string Encrypt(string message, string publicKeyPath)
+    public static async Task<string> Encrypt(string message, string publicKeyPath)
     {
         try
         {
@@ -34,7 +34,8 @@ public static class MessageEncryption
                 return string.Empty;
             }
 
-            byte[] publicKeyBytes = Convert.FromBase64String(File.ReadAllText(publicKeyPath));
+            string publicKeyContent = await File.ReadAllTextAsync(publicKeyPath);
+            byte[] publicKeyBytes = Convert.FromBase64String(publicKeyContent);
 
             using var rsa = RSA.Create();
             rsa.ImportRSAPublicKey(publicKeyBytes, out _);
