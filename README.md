@@ -1,4 +1,4 @@
-# Postbox
+# 📫 Postbox
 ![](https://img.shields.io/badge/Built_with-.NET_8.0-blue)
 
 📫 Postbox is a lightweight encryption tool which allows users to generate key pairs, exchange public keys, encrypt and decrypt messages, and communicate securely over SMTP using [RSA](https://en.wikipedia.org/wiki/RSA_(cryptosystem)).
@@ -106,36 +106,36 @@ Commands:
 ```
 
 ```s
-encrypt-message <message> <key>  Encrypts a message.
+  encrypt-message <message> <key>  Encrypts a message.
 
-> dotnet run -- encrypt-message "Foo!" "email@example.com"
-> dotnet run -- encrypt-message --message "Foo!" --key "email@example.com"
-> dotnet run -- encrypt-message -m "Foo!" -k "email@example.com"
+  > dotnet run -- encrypt-message "Foo!" "email@example.com"
+  > dotnet run -- encrypt-message --message "Foo!" --key "email@example.com"
+  > dotnet run -- encrypt-message -m "Foo!" -k "email@example.com"
 
-** Output:
-[00:00:00 INF] Message: GTMDAql3cgoOoeL/1qYvDNzIaQrMWxC4Fg8QAQ1wdKgyfXPNGi4PzfCmOuNR8I4ixLW99Du745Q
-cn6FSbQnpZsFAg8vC+I+Dr9sVV9waS4gRnW+sIliuNRse77tUB6SzYPjZnbJDx4cXcxEcOSz4e8xxnGa7xiA98/rp71RNEQE1Wu
-MYQgrTXyl1qRWPse++zvyWaIqj39p4IiJcfm1a4SuMYvoGGkvu4dupTCcYQrvAbxOUqdccJvg4yOYx0S5HhcuRxzN6EUYkGTSsy
-0uS33eAwMSEOhI99fsj4LshxMius7fZA9Fm5We5rjdhtTwWxwLEzkfqYCZh7jE/YHxGVQ==
+  ** Output:
+  [00:00:00 INF] Message: GTMDAql3cgoOoeL/1qYvDNzIaQrMWxC4Fg8QAQ1wdKgyfXPNGi4PzfCmOuNR8I4ixLW99Du745Q
+  cn6FSbQnpZsFAg8vC+I+Dr9sVV9waS4gRnW+sIliuNRse77tUB6SzYPjZnbJDx4cXcxEcOSz4e8xxnGa7xiA98/rp71RNEQE1Wu
+  MYQgrTXyl1qRWPse++zvyWaIqj39p4IiJcfm1a4SuMYvoGGkvu4dupTCcYQrvAbxOUqdccJvg4yOYx0S5HhcuRxzN6EUYkGTSsy
+  0uS33eAwMSEOhI99fsj4LshxMius7fZA9Fm5We5rjdhtTwWxwLEzkfqYCZh7jE/YHxGVQ==
 ```
 
 ```s
-decrypt-message <message> <key>  Decrypts a message.
+  decrypt-message <message> <key>  Decrypts a message.
 
-> dotnet run -- decrypt-message "GTMDAql3cgoOoeL/1qYvDNzIaQrM/..."
-> dotnet run -- decrypt-message --message "GTMDAql3cgoOoeL/1qYvDNzIaQrM/..." --key "email@example.com"
+  > dotnet run -- decrypt-message "GTMDAql3cgoOoeL/1qYvDNzIaQrM/..."
+  > dotnet run -- decrypt-message --message "GTMDAql3cgoOoeL/1qYvDNzIaQrM/..." --key "email@example.com"
 
-** Output:
-[00:00:00 INF] Message: Foo!
+  ** Output:
+  [00:00:00 INF] Message: Foo!
 ```
 
 ```s
-send-message <message> <email>
+  send-message <message> <email>
 
-> dotnet run -- send-message "Foo!" "email@example.com"
-> dotnet run -- send-message --message "Foo!" --email "email@example.com"
+  > dotnet run -- send-message "Foo!" "recipient_email@example.com"
+  > dotnet run -- send-message --message "Foo!" --email "recipient_email@example.com"
 
-** Output:
-[00:00:00 INF] 📩 Dispatching email to `recipient_email@example.com` via 127.0.0.1:1025...
-[00:00:00 INF] Email has been sent successfully.
+  ** Output:
+  [00:00:00 INF] 📩 Dispatching email to `recipient_email@example.com` via 127.0.0.1:1025...
+  [00:00:00 INF] Email has been sent successfully.
 ```
