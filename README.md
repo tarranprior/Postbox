@@ -1,7 +1,7 @@
 # 📫 Postbox
 ![](https://img.shields.io/badge/Built_with-.NET_8.0-blue)
 
-📫 Postbox is a lightweight encryption tool which allows users to generate key pairs, exchange public keys, encrypt and decrypt messages, and communicate securely over SMTP using [RSA](https://en.wikipedia.org/wiki/RSA_(cryptosystem)).
+📫 Postbox is a lightweight encryption tool which allows users to generate key pairs, exchange public keys, encrypt and decrypt messages, and communicate securely over SMTP using the [RSA](https://en.wikipedia.org/wiki/RSA_(cryptosystem))-2048/4096 algorithm.
 
 ## Features
 
@@ -17,15 +17,30 @@
     cd Postbox
     ```
 
-3. Restore the dependencies:
+3. Restore the dependencies and run the application using `dotnet`:
     ```s
     dotnet restore
+    dotnet run Postbox --help
     ```
 
-4. Run the application:
+4. You can also use 🐋 Docker by running:
    ```s
-   dotnet run Postbox --help
+   docker build -t postbox .
+   docker volume create postbox_keys
    ```
+
+   > You must also change the `SMTP_SERVER` value in the `.env` file to `host.docker.internal`, and disable SSL with `SMTP_SSL=FALSE` (or import the SSL certificate to Docker).<br/>
+   >
+   > ```sh
+   > SMTP_SERV=YOUR_SMTP_SERVER
+   > SMTP_PORT=YOUR_SMTP_PORT
+   > SMTP_SSL=TRUE
+   > SMTP_USER=YOUR_EMAIL_ADDRESS
+   > SMTP_PASS=YOUR_PASSWORD
+   > 
+   > # SMTP_SERVER=host.docker.internal # for Docker
+   > # SMTP_SSL=FALSE # for Docker
+   > ```
 
 ## Configuration
 
