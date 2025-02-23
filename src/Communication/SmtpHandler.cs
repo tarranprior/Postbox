@@ -31,7 +31,7 @@ public static class SmtpHandler
             using SmtpClient smtp = new (smtpServer, smtpPort);
             {
                 smtp.Credentials = new NetworkCredential(smtpUser, smtpPass);
-                smtp.EnableSsl = true;
+                smtp.EnableSsl = ConfigManager.GetBool("SMTP_SSL", true);
 
                 using MailMessage message = new ()
                 {

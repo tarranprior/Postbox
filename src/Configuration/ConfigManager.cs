@@ -13,8 +13,9 @@ public static class ConfigManager
     /// </summary>
     public static async Task LoadConfig()
     {
-        string env = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../", ".env"));
-        
+        string env = Environment.GetEnvironmentVariable("DOTNET_ENV_PATH") // for Docker
+            ?? Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../", ".env"));
+
         if (!File.Exists(env))
         {
             Log.Error("Dotenv file (.env) does not exist.");
@@ -57,5 +58,23 @@ public static class ConfigManager
         }
         
         return defaultValue;
+    }
+
+    /// <summary>
+    /// Retrieves an environment variable as a boolean.
+    /// </summary>
+    /// <param name="key">The name of the environment variable.</param>
+    /// <param name="defaultValue">The default value to return if conversion fails.</param>
+    /// <returns>The boolean value of the environment variable, or the default value if not found.</returns>
+    public static bool GetBool(string key, bool defaultValue = true)
+    {
+        string value = Env.GetString(key, defaultValue ? "TRUE" : "FALSE").Trim().ToLower();
+
+        return value switch
+        {
+            "true" => true,
+            "false" => false,
+            _ => defaultValue
+        };
     }
 }

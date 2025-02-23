@@ -14,7 +14,8 @@ public static class KeyManager
     /// The default directory where key files are written.
     /// </summary>
     public static readonly string DefaultDirectory =
-    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Postbox", "Keys");
+    Environment.GetEnvironmentVariable("POSTBOX_KEYS_PATH") // for Docker
+    ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Postbox", "Keys");
 
     /// <summary>
     /// Generates an RSA key pair and saves the private and public key files to the default directory.

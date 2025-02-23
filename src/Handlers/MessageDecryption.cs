@@ -32,7 +32,7 @@ public static class MessageDecryption
             if (string.IsNullOrEmpty(privateKeyPath))
             {
                 string email = ConfigManager.Get("SMTP_USER");
-                privateKeyPath = Path.Combine(KeyManager.DefaultDirectory, $"{email}_private.pem");
+                privateKeyPath = Path.Combine(KeyManager.DefaultDirectory, $"{email.ToLower()}_private.pem");
 
                 if (!File.Exists(privateKeyPath))
                 {
