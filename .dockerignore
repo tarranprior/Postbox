@@ -1,0 +1,7 @@
+.EXAMPLE.env
+bin/
+obj/
+*.md
+.git
+.gitignore
+Dockerfile
