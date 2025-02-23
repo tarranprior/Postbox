@@ -44,7 +44,11 @@ public class EncryptMessageCommand
                 }
 
                 string encryptedMessage = await MessageEncryption.Encrypt(message, key);
-                Log.Information($"Encrypted Message: {encryptedMessage}");
+
+                if (!string.IsNullOrEmpty(encryptedMessage))
+                {
+                    Log.Information($"Encrypted Message: {encryptedMessage}");
+                }
             }
             catch (Exception ex)
             {
