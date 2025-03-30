@@ -8,30 +8,30 @@
 ## Installation
 
 1. Clone the repository:
-    ```s
+    ```shell
     git clone https://github.com/tarranprior/Postbox
     ```
     
 2. Change to the directory.
-    ```s
+    ```shell
     cd Postbox
     ```
 
 3. Restore the dependencies and run the application using `dotnet`:
-    ```s
+    ```shell
     dotnet restore
     dotnet run Postbox --help
     ```
 
 4. You can also use 🐋 Docker by running:
-   ```s
+   ```shell
    docker build -t postbox .
    docker volume create postbox_keys
    ```
 
    > You must also change the `SMTP_SERVER` value in the `.env` file to `host.docker.internal`, and disable SSL with `SMTP_SSL=FALSE` (or import the SSL certificate to Docker).<br/>
    >
-   > ```sh
+   > ```shell
    > SMTP_SERV=YOUR_SMTP_SERVER
    > SMTP_PORT=YOUR_SMTP_PORT
    > SMTP_SSL=TRUE
@@ -46,7 +46,8 @@
 
 1. Install and configure a local SMTP Server like [Proton Bridge](https://proton.me/mail/bridge).
 2. Export the certificate and install:
-    ```s
+
+    ```shell
     ** Import the certificate:
     PS C:\> Import-Certificate -FilePath "./cert.pem" -CertStoreLocation Cert:\CurrentUser\Root
 
@@ -59,7 +60,7 @@
     ```
 3. Update the values in `.env.EXAMPLE` and rename to `.env`.
   
-    ```s
+    ```shell
     SMTP_SERV=YOUR_SMTP_SERVER * Defaults to 127.0.0.1
     SMTP_PORT=YOUR_SMTP_PORT * Defaults to 1025 
     SMTP_USER=YOUR_EMAIL_ADDRESS
@@ -69,7 +70,7 @@
 The `SMTP_USER` value will be the name of your public and private keys: `YOUR_EMAIL_ADDRESS_public.pem` and `YOUR_EMAIL_ADDRESS_private.pem`. These will then act as the default keys when encrypting and decrypting messages.
 
 ## Usage
-```
+```shell
 Description:
   📫 Postbox is a lightweight encryption tool which allows users to generate key pairs,
 exchange public keys, encrypt and decrypt messages, and communicate securely over SMTP using RSA.
@@ -92,14 +93,14 @@ Commands:
 
 ### Examples
 
-```s
+```shell
   generate-keys  Generates a new key pair.
 
   > dotnet run -- generate-keys
   > dotnet run -- generate-keys --bits 4096
 ```
 
-```s
+```shell
   import-key <key> <email>         Imports a key from a local file.
 
   > dotnet run -- import-key "path/to/key.pem" "email@example.com"
@@ -109,7 +110,7 @@ Commands:
   [00:00:00 INF] 📥 Key successfully imported for `email@example.com`.
 ```
 
-```s
+```shell
   send-key <key> <email>  Emails a public key to a recipient.
 
   > dotnet run -- send-key "recipient_email@example.com"
@@ -120,7 +121,7 @@ Commands:
   [00:00:00 INF] Email has been sent successfully.
 ```
 
-```s
+```shell
   encrypt-message <message> <key>  Encrypts a message.
 
   > dotnet run -- encrypt-message "Foo!" "email@example.com"
@@ -134,7 +135,7 @@ Commands:
   0uS33eAwMSEOhI99fsj4LshxMius7fZA9Fm5We5rjdhtTwWxwLEzkfqYCZh7jE/YHxGVQ==
 ```
 
-```s
+```shell
   decrypt-message <message> <key>  Decrypts a message.
 
   > dotnet run -- decrypt-message "GTMDAql3cgoOoeL/1qYvDNzIaQrM/..."
@@ -144,7 +145,7 @@ Commands:
   [00:00:00 INF] Message: Foo!
 ```
 
-```s
+```shell
   send-message <message> <email>
 
   > dotnet run -- send-message "Foo!" "recipient_email@example.com"
